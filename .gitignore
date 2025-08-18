@@ -1,3 +1,9 @@
 .venv
 *.xml
 *.iml
+experimento/
+rabbitmq_data/
+redis_commander_data/
+redis_data/
+redisinsight_data/
+.env

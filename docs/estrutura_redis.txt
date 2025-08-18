@@ -1,0 +1,141 @@
+🔹 Estrutura proposta no Redis
+1. Chave para cada estação (HASH)
+
+Armazenar os atributos de cada estação em uma hash, com o station_id como chave:
+
+station:{station_id}
+
+
+Exemplo:
+
+HSET station:044005a83e2ebd69a2e93791d1555f89 \
+    name "29 - Praça 29 de Março" \
+    latitude -25.4287569006947 \
+    longitude -49.2861399795242 \
+    free_bikes 14 \
+    empty_slots 5 \
+    timestamp "2025-08-18T22:51:27Z"
+
+2. Índice de todas as estações
+
+Um SET com os IDs de todas as estações, para facilitar consultas globais:
+
+SADD stations 044005a83e2ebd69a2e93791d1555f89 1234567890abcdef ...
+
+3. Cache geral da última atualização
+
+Guardar a hora da última atualização da API:
+
+SET last_update "2025-08-18T22:51:27Z"
+
+4. Ranking por número de bikes (Sorted Set)
+
+Facilitar consultas do tipo "quais estações têm mais bicicletas disponíveis":
+
+ZADD bikes_available 14 "044005a83e2ebd69a2e93791d1555f89"
+
+
+Depois dá para consultar as top N estações com mais bikes:
+
+ZREVRANGE bikes_available 0 4 WITHSCORES
+
+🔹 Exemplo de Fluxo
+
+Publisher chama a API e atualiza o Redis:
+
+Apaga ranking antigo (DEL bikes_available)
+
+Atualiza cada estação (HSET)
+
+Atualiza ranking (ZADD)
+
+Atualiza last_update
+
+Bot (consumer) busca do Redis:
+
+Usuário pede "quantas bikes tem na Praça 29 de Março?"
+
+Bot procura por station:* com HGET station:{id} free_bikes
+
+Se usuário pedir "top 5 estações", consulta o sorted set bikes_available.
+
+---------------------------------------------------------------------------------------------------------------------
+Boa! 🚴‍♂️ Já que a API do CityBikes retorna os dados de todas as estações de Curitiba, podemos pensar na estrutura do Redis de forma a:
+
+Armazenar os dados de cada estação individualmente
+
+Ter uma visão geral consolidada (ex: total de bikes)
+
+Garantir atualização rápida e simples (TTL ou sobrescrita)
+
+📦 Estrutura do Redis
+1. Chave para cada estação (HASH)
+
+Cada estação terá seus atributos armazenados em um hash.
+
+🔑 Nome da chave:
+
+bike:station:<station_id>
+
+
+📌 Exemplo (baseado no JSON da API):
+
+HSET bike:station:044005a83e2ebd69a2e93791d1555f89 \
+    name "Praça 29 de Março" \
+    latitude -25.4287569006947 \
+    longitude -49.2861399795242 \
+    free_bikes 14 \
+    empty_slots 5 \
+    timestamp "2025-08-18T22:51:27.778509+00:00Z"
+
+2. Lista de estações (SET ou LIST)
+
+Para facilitar iterações, manter uma lista de todas as estações.
+
+🔑 Nome da chave:
+
+bike:stations
+
+
+📌 Exemplo:
+
+SADD bike:stations 044005a83e2ebd69a2e93791d1555f89
+SADD bike:stations 08a4566d2b64d3ed93267fa2921aa234
+
+3. Resumo consolidado (STRING ou HASH)
+
+Um resumo geral com a quantidade total de bicicletas disponíveis em Curitiba.
+
+🔑 Nome da chave:
+
+bike:summary
+
+
+📌 Exemplo:
+
+HSET bike:summary \
+    total_stations 25 \
+    total_bikes 210 \
+    total_empty_slots 85 \
+    last_update "2025-08-18T22:51:27Z"
+
+4. TTL para cache
+
+Se não for necessário armazenar histórico, podemos usar expire (ex: 60 segundos).
+
+EXPIRE bike:station:044005a83e2ebd69a2e93791d1555f89 60
+EXPIRE bike:summary 60
+
+🔎 Consulta típica do bot
+
+Usuário pergunta: “Quantas bikes tem na Praça 29 de Março?”
+→ HGETALL bike:station:044005a83e2ebd69a2e93791d1555f89
+
+Usuário pergunta: “Quantas bikes tem em Curitiba agora?”
+→ HGET bike:summary total_bikes
+
+👉 Pergunto: você quer que eu monte um script em Python que consuma essa API, processe os dados e já grave nessa estrutura no Redis?
+
+
+
+
