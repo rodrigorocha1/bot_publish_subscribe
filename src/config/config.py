@@ -5,5 +5,8 @@ load_dotenv()
 
 
 class Config:
-
     URL_API = os.environ['URL_CITYBIKE']
+    USR_RABBITMQ = os.environ['USR_RABBITMQ']
+    PWD_RABBITMQ = os.environ['PWD_RABBITMQ']
+    HOST_RABBITMQ = os.environ['HOST_RABBITMQ']
+    PORTA_RABBITMQ = os.environ['PORTA_RABBITMQ']
