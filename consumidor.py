@@ -49,10 +49,3 @@ class Consumidor(ABC):
     @abstractmethod
     def executar(self):
         pass
-
-
-if __name__ == '__main__':
-    c = Consumidor(
-        api_bike=BikesApi()
-    )
-    c.executar()
