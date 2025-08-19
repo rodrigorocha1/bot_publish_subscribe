@@ -18,3 +18,5 @@ class ConsumidorDiscord(Consumidor):
     ):
         pass
 
+
+
