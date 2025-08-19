@@ -5,7 +5,7 @@ from consumidor import Consumidor
 from src.conexao_api.i_bikes_api import IBikesAPI
 
 
-class ConsumidorTelegram(Consumidor):
+class ConsumidorDiscord(Consumidor):
 
     def __init__(self, api_bike: IBikesAPI):
         super().__init__(api_bike)

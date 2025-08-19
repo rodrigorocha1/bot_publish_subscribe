@@ -46,6 +46,13 @@ class Consumidor(ABC):
         canal.queue_bind(exchange='bicicleta_curitiba', queue=nome_fila)
         return canal, nome_fila
 
-    @abstractmethod
     def executar(self):
-        pass
+        canal = self._conexao.channel()
+        canal, nome_fila = self.configurar_fila(canal=canal)
+        canal.basic_consume(
+            queue=nome_fila,
+            on_message_callback=self.mostrar_mensagem,
+            auto_ack=True
+
+        )
+        canal.start_consuming()
