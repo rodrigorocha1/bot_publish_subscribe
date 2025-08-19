@@ -19,7 +19,7 @@ class ConsumidorTelegram(Consumidor):
         pass
 
     def executar(self):
-        canal = self.__conexao.channel()
+        canal = self._conexao.channel()
         canal, nome_fila = self.configurar_fila(canal=canal)
         canal.basic_consume(
             queue=nome_fila,
