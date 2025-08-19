@@ -4,9 +4,10 @@ from pika.adapters.blocking_connection import BlockingChannel
 from src.config.config import Config
 from src.conexao_api.i_bikes_api import IBikesAPI
 from src.conexao_api.bike_api import BikesApi
+from abc import ABC, abstractmethod
 
 
-class Consumidor:
+class Consumidor(ABC):
 
     def __init__(self, api_bike: IBikesAPI):
         self.__credenciais = pika.PlainCredentials(
@@ -22,6 +23,7 @@ class Consumidor:
         self.__conexao = pika.BlockingConnection(parameters=self.__parametros_conexao)
         self.__api_bike = api_bike
 
+    @abstractmethod
     def mostrar_mensagem(
             self,
             ch: BlockingChannel,
@@ -29,9 +31,10 @@ class Consumidor:
             properties: pika.spec.BasicProperties,
             body: bytes
     ):
-        print('=' * 20)
-        print(body)
-        print('=' * 20)
+        # print('=' * 20)
+        # print(body)
+        # print('=' * 20)
+        pass
 
     def configurar_fila(self, canal: BlockingChannel) -> Tuple[BlockingChannel, str]:
         canal.exchange_declare(
@@ -43,16 +46,9 @@ class Consumidor:
         canal.queue_bind(exchange='bicicleta_curitiba', queue=nome_fila)
         return canal, nome_fila
 
+    @abstractmethod
     def executar(self):
-        canal = self.__conexao.channel()
-        canal, nome_fila = self.configurar_fila(canal=canal)
-        canal.basic_consume(
-            queue=nome_fila,
-            on_message_callback=self.mostrar_mensagem,
-            auto_ack=True
-
-        )
-        canal.start_consuming()
+        pass
 
 
 if __name__ == '__main__':
