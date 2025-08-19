@@ -19,4 +19,5 @@ class ConsumidorDiscord(Consumidor):
         pass
 
 
-
+c = ConsumidorDiscord(api_bike=None)
+c.executar()

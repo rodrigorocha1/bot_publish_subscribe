@@ -10,18 +10,18 @@ from abc import ABC, abstractmethod
 class Consumidor(ABC):
 
     def __init__(self, api_bike: IBikesAPI):
-        self._credenciais = pika.PlainCredentials(
+        self.__credenciais = pika.PlainCredentials(
             Config.USR_RABBITMQ,
             Config.PWD_RABBITMQ
         )
-        self._parametros_conexao = pika.ConnectionParameters(
+        self.__parametros_conexao = pika.ConnectionParameters(
             host=Config.HOST_RABBITMQ,
             port=Config.PORTA_RABBITMQ,
             virtual_host='/',
-            credentials=self._credenciais
+            credentials=self.__credenciais
         )
-        self._conexao = pika.BlockingConnection(parameters=self._parametros_conexao)
-        self._api_bike = api_bike
+        self.__conexao = pika.BlockingConnection(parameters=self.__parametros_conexao)
+        self.__api_bike = api_bike
 
     @abstractmethod
     def mostrar_mensagem(
@@ -47,7 +47,7 @@ class Consumidor(ABC):
         return canal, nome_fila
 
     def executar(self):
-        canal = self._conexao.channel()
+        canal = self.__conexao.channel()
         canal, nome_fila = self.configurar_fila(canal=canal)
         canal.basic_consume(
             queue=nome_fila,
