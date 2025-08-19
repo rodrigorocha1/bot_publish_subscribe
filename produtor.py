@@ -1,0 +1,2 @@
+class Produtor:
+    pass
