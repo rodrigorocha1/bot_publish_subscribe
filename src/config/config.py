@@ -11,3 +11,5 @@ class Config:
     HOST_RABBITMQ = os.environ['HOST_RABBITMQ']
     PORTA_RABBITMQ = os.environ['PORTA_RABBITMQ']
     URL_DISCORD = os.environ['URL_DISCORD']
+    TOKEN_TELEGRAM = os.environ['TOKEN_TELEGRAM']
+    CHAT_ID = os.environ['CHAT_ID']
