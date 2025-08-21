@@ -14,7 +14,9 @@ class ConsumidorTelegram(Consumidor):
             self,
             ch: BlockingChannel,
             method: pika.spec.Basic.Deliver,
-            properties: pika.spec.BasicProperties, body: bytes
+            properties: pika.spec.BasicProperties,
+            body: bytes
     ):
-        pass
+        req = body.decode()
+        self.
 
