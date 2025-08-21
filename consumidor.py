@@ -1,13 +1,17 @@
-from typing import Tuple
+import json
+from typing import Tuple, Dict
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
+from src.mensageiro.mensageiro_discord import MensageiroDiscord
 from src.config.config import Config
 from src.conexao_api.i_bikes_api import IBikesAPI
 from src.conexao_api.bike_api import BikesApi
-from abc import ABC, abstractmethod
 
 
-class Consumidor(ABC):
+from src.mensageiro.mensageiro_telegram import MensageiroTelegram
+
+
+class Consumidor:
 
     def __init__(self, api_bike: IBikesAPI):
         self.__credenciais = pika.PlainCredentials(
@@ -22,8 +26,15 @@ class Consumidor(ABC):
         )
         self.__conexao = pika.BlockingConnection(parameters=self.__parametros_conexao)
         self.__api_bike = api_bike
+        self.__bots = [
+            MensageiroDiscord(),
+            MensageiroTelegram()
+        ]
 
-    @abstractmethod
+    def enviar_mensagem(self, req: Dict):
+        for bot in self.__bots:
+            bot.enviar_mensagem(req=req)
+
     def mostrar_mensagem(
             self,
             ch: BlockingChannel,
@@ -31,10 +42,9 @@ class Consumidor(ABC):
             properties: pika.spec.BasicProperties,
             body: bytes
     ):
-        # print('=' * 20)
-        # print(body)
-        # print('=' * 20)
-        pass
+        req = json.loads(body.decode())
+
+        self.enviar_mensagem(req=req)
 
     def configurar_fila(self, canal: BlockingChannel) -> Tuple[BlockingChannel, str]:
         canal.exchange_declare(
@@ -56,3 +66,8 @@ class Consumidor(ABC):
 
         )
         canal.start_consuming()
+
+
+if __name__ == '__main__':
+    c = Consumidor(api_bike=BikesApi())
+    c.executar()

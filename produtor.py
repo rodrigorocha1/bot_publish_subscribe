@@ -32,14 +32,14 @@ class Produtor:
             try:
 
                 message = self.__api_bike.consultar_dados_bicicleta(estacao='bike-curitiba')
-                print(message)
+
                 canal.basic_publish(
                     exchange='bicicleta_curitiba',
                     routing_key='',
                     body=json.dumps(message)
                 )
-                print('3 segundos')
-                time.sleep(5 * 60)
+
+                time.sleep(0.5 * 60)
 
             except KeyboardInterrupt:
                 print('Fechado')

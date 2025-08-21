@@ -4,9 +4,10 @@ from discord_webhook import DiscordEmbed, DiscordWebhook
 from src.formatador.formatador import Formatador
 
 from src.config.config import Config
+from src.mensageiro.ibots import IBots
 
 
-class MensageiroDiscord:
+class MensageiroDiscord(IBots):
 
     def __init__(self):
         self.__webhook = DiscordWebhook(
@@ -42,6 +43,5 @@ class MensageiroDiscord:
                 self.__webhook.add_embed(embed)
 
             response = self.__webhook.execute()
-            print(response.status_code, response.json())
             self.__webhook.remove_embeds()
             time.sleep(1)

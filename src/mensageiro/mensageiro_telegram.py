@@ -4,9 +4,10 @@ import re
 import telebot
 from src.config.config import Config
 from src.formatador.formatador import Formatador
+from src.mensageiro.ibots import IBots
 
 
-class MensageiroTelegram:
+class MensageiroTelegram(IBots):
     def __init__(self):
         self.__TOKEN_TELEGRAM = Config.TOKEN_TELEGRAM
         self.__bot = telebot.TeleBot(self.__TOKEN_TELEGRAM)
@@ -15,7 +16,6 @@ class MensageiroTelegram:
     def enviar_mensagem(self, req: Dict):
         estacoes: List = req['network']['stations']
         estacoes = sorted(estacoes, key=lambda x: int(x['name'].split('-')[0].strip()))
-
         for estacao in estacoes:
             latitude = estacao['latitude']
             longitude = estacao['longitude']
