@@ -14,7 +14,7 @@ class MensageiroDiscord:
             username='BotSistema'
         )
 
-    def mensagem(self, req: Dict):
+    def enviar_mensagem(self, req: Dict):
         estacoes: List = req['network']['stations']
         estacoes = sorted(estacoes, key=lambda x: int(x['name'].split('-')[0].strip()))
 
