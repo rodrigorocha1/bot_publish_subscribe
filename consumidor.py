@@ -1,7 +1,9 @@
 import json
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
+
+from src.mensageiro.ibots import IBots
 from src.mensageiro.mensageiro_discord import MensageiroDiscord
 from src.config.config import Config
 from src.conexao_api.i_bikes_api import IBikesAPI
@@ -13,7 +15,7 @@ from src.mensageiro.mensageiro_telegram import MensageiroTelegram
 
 class Consumidor:
 
-    def __init__(self, api_bike: IBikesAPI):
+    def __init__(self, api_bike: IBikesAPI, bots_mensageiro: List[IBots]):
         self.__credenciais = pika.PlainCredentials(
             Config.USR_RABBITMQ,
             Config.PWD_RABBITMQ
@@ -26,10 +28,7 @@ class Consumidor:
         )
         self.__conexao = pika.BlockingConnection(parameters=self.__parametros_conexao)
         self.__api_bike = api_bike
-        self.__bots = [
-            MensageiroDiscord(),
-            MensageiroTelegram()
-        ]
+        self.__bots = bots_mensageiro
 
     def enviar_mensagem(self, req: Dict):
         for bot in self.__bots:
@@ -69,5 +68,8 @@ class Consumidor:
 
 
 if __name__ == '__main__':
-    c = Consumidor(api_bike=BikesApi())
+    c = Consumidor(api_bike=BikesApi(), bots_mensageiro=[
+            MensageiroDiscord(),
+            MensageiroTelegram()
+        ])
     c.executar()
