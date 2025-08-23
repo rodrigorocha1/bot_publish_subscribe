@@ -4,11 +4,13 @@ O objetivo do projeto é explorar o padrão **Publish/Subscribe** utilizando o *
 
 ---
 
+
 ## 2. 🛠️ Tecnologias utilizadas  
 
 - 🐍 **Python**: Linguagem para desenvolvimento do bot.  
-- 📡 **RabbitMQ**: Serviço de mensageria.  
-- 🎮 **Discord**: Serviço de mensageria.  
+- 📡 **RabbitMQ**: Serviço de mensageria para implementação do padrão Publish/Subscribe.
+- 🎮 **Discord**: Plataforma de comunicação para interação com o bot.
+- 💬 **Telegram**: Alternativa de mensageria para interação com o bot.
 - 🚲 **CityBikes API**: API que disponibiliza as estações com bikes disponíveis.  
 
 ---
