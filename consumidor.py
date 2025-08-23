@@ -1,6 +1,6 @@
 import json
 from typing import Tuple, Dict, List
-import pika
+import pika # t
 from pika.adapters.blocking_connection import BlockingChannel
 
 from src.mensageiro.ibots import IBots

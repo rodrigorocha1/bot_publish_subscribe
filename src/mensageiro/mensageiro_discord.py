@@ -44,4 +44,4 @@ class MensageiroDiscord(IBots):
 
             response = self.__webhook.execute()
             self.__webhook.remove_embeds()
-            time.sleep(1)
+            time.sleep(3)

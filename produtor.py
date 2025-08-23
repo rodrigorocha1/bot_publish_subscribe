@@ -39,7 +39,7 @@ class Produtor:
                     body=json.dumps(message)
                 )
 
-                time.sleep(1 * 60)
+                time.sleep(0.5 * 60)
 
             except KeyboardInterrupt:
                 print('Fechado')
